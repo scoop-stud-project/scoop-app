@@ -1,0 +1,26 @@
+@startuml c4-level-1-context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context Diagram for SCoop (C4 Level 1)
+
+Person(student, "Student (User)", "University student acting as Project Creator, Applicant / Candidate, or Team Member")
+Person(admin, "Administrator", "Manages skills dictionary, tags, events/organisations, and moderates reported reviews")
+
+System(scoop, "SCoop System", "Student cooperation platform for personalized matching, team formation, and peer reliability tracking")
+
+System_Ext(resend, "Resend", "Automated transactional email service for university email verification and recruitment notifications")
+
+Rel(student, scoop, "Registers with university email, configures projects & RoleSlots, discovers matches, applies/accepts invites, submits peer reviews, manages privacy", "HTTPS / Web UI")
+Rel(admin, scoop, "Manages skill dictionary, tags, organisations & events, and moderates flagged peer reviews", "HTTPS / Admin UI")
+Rel(scoop, resend, "Sends verification links (FR02) and recruitment notifications (FR33)", "HTTPS / Resend API")
+Rel(resend, student, "Delivers verification and notification emails", "Email / SMTP")
+
+note right of scoop
+  External workspaces (e.g., Discord, GitHub)
+  are stored as private links (FR14, FR32)
+  and are not direct API integrations.
+end note
+
+@enduml

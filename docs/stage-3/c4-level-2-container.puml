@@ -1,0 +1,27 @@
+@startuml c4-level-2-container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram for SCoop (C4 Level 2)
+
+Person(student, "Student (User)", "Project Creator, Applicant / Candidate, or Team Member")
+Person(admin, "Administrator", "Manages dictionaries, taxonomies, and review moderation")
+
+System_Boundary(scoop_boundary, "SCoop System") {
+    Container(ui, "Web Browser / UI Layer", "HTML / Tailwind CSS", "Responsive frontend interface for browsing projects, managing profiles/teams, and reviewing candidates")
+    Container(backend, "Web Application Backend", "Python / Django", "Implements business logic, access control, matchmaking, workflow state transitions, and server-rendered views/endpoints")
+    ContainerDb(db, "Relational Database", "PostgreSQL", "Stores user profiles, projects, RoleSlots, recruitment requests, role assignments, peer reviews, and dictionaries")
+}
+
+System_Ext(resend_api, "Resend API", "External Transactional Email Service", "Delivers university email verification links and recruitment event notifications")
+
+Rel(student, ui, "Interacts with UI views and actions", "HTTPS")
+Rel(admin, ui, "Accesses administrative & moderation views", "HTTPS")
+
+Rel(ui, backend, "Submits forms, requests pages/data, and receives rendered responses", "HTTPS")
+Rel(backend, db, "Reads and writes persistent domain entities and enforces transactional consistency", "TCP / PostgreSQL Wire Protocol")
+Rel(backend, resend_api, "Dispatches verification and notification emails", "HTTPS / REST API")
+Rel(resend_api, student, "Delivers emails to student inbox", "Email")
+
+@enduml
